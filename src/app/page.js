@@ -4,22 +4,24 @@ import { useEffect, useState } from "react";
 export default function Home() {
   const [products, setProducts] = useState([]);
   const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
   const fetchData = async () => {
-    let dty = await fetch("https://dummyjson.com/products?limit=100");
+    let dty = await fetch(`https://dummyjson.com/products?limit=10&skip=${page * 10 - 10}`);
     let res = await dty.json();
     if (res && res.products) {
       setProducts(res.products);
+      setTotalPages(res.total / 10);
     }
   };
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [page]);
 
   const selectedPageHandler = (selectedPage) => {
     if (
       selectedPage >= 1 &&
-      selectedPage <= products.length / 10 &&
+      selectedPage <= totalPages &&
       selectedPage !== page
     )
       setPage(selectedPage);
@@ -29,7 +31,7 @@ export default function Home() {
     <div className="">
       {products.length > 0 && (
         <div className="products">
-          {products.slice(page * 10 - 10, page * 10).map((product) => {
+          {products.map((product) => {
             //to be able to start from 0, we need to use (page * 10 - 10)
             return (
               <span key={product.id} className="products__single">
@@ -48,7 +50,7 @@ export default function Home() {
           >
             ◀️
           </button>
-          {[...Array(products.length / 10)].map((_, index) => (
+          {[...Array(totalPages)].map((_, index) => (
             <span
               onClick={() => selectedPageHandler(index + 1)}
               key={index}
@@ -59,9 +61,7 @@ export default function Home() {
           ))}
           <button
             onClick={() => selectedPageHandler(page + 1)}
-            className={
-              page < products.length / 10 ? "" : "pagination__disabled"
-            }
+            className={page < totalPages ? "" : "pagination__disabled"}
           >
             ▶️
           </button>
