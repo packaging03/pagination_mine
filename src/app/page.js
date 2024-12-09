@@ -17,9 +17,13 @@ export default function Home() {
   }, []);
 
   const selectedPageHandler = (selectedPage) => {
-    setPage(selectedPage);
+    if (
+      selectedPage >= 1 &&
+      selectedPage <= products.length / 10 &&
+      selectedPage !== page
+    )
+      setPage(selectedPage);
   };
-
 
   return (
     <div className="">
@@ -38,15 +42,17 @@ export default function Home() {
       )}
       {products.length > 0 && (
         <div className="pagination">
-          <button>◀️</button>
+          <button onClick={() => selectedPageHandler(page - 1)}>◀️</button>
           {[...Array(products.length / 10)].map((_, index) => (
-            <span onClick={() => selectedPageHandler(index + 1)} key={index}
-            className={page === index + 1 ? 'pagination__selected' : ''}
+            <span
+              onClick={() => selectedPageHandler(index + 1)}
+              key={index}
+              className={page === index + 1 ? "pagination__selected" : ""}
             >
               {index + 1}
             </span>
           ))}
-          <button>▶️</button>
+          <button onClick={() => selectedPageHandler(page + 1)}>▶️</button>
         </div>
       )}
     </div>
