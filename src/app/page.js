@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 export default function Home() {
   const [products, setProducts] = useState([]);
-
+  const [page, setPage] = useState(1);
   const fetchData = async () => {
     let dty = await fetch("https://dummyjson.com/products?limit=100");
     let res = await dty.json();
@@ -16,12 +16,17 @@ export default function Home() {
     fetchData();
   }, []);
 
+  const selectedPageHandler = (selectedPage) => {
+    setPage(selectedPage);
+  };
+
+
   return (
     <div className="">
       {products.length > 0 && (
         <div className="products">
-          {products.map((product) => {
-            
+          {products.slice(page * 10 - 10, page * 10).map((product) => {
+            //to be able to start from 0, we need to use (page * 10 - 10)
             return (
               <span key={product.id} className="products__single">
                 <img alt={product.title} src={product.thumbnail} />
@@ -29,6 +34,19 @@ export default function Home() {
               </span>
             );
           })}
+        </div>
+      )}
+      {products.length > 0 && (
+        <div className="pagination">
+          <button>◀️</button>
+          {[...Array(products.length / 10)].map((_, index) => (
+            <span onClick={() => selectedPageHandler(index + 1)} key={index}
+            className={page === index + 1 ? 'pagination__selected' : ''}
+            >
+              {index + 1}
+            </span>
+          ))}
+          <button>▶️</button>
         </div>
       )}
     </div>
