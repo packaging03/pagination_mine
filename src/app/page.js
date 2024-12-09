@@ -42,7 +42,12 @@ export default function Home() {
       )}
       {products.length > 0 && (
         <div className="pagination">
-          <button onClick={() => selectedPageHandler(page - 1)}>◀️</button>
+          <button
+            className={page > 1 ? "" : "pagination__disabled"}
+            onClick={() => selectedPageHandler(page - 1)}
+          >
+            ◀️
+          </button>
           {[...Array(products.length / 10)].map((_, index) => (
             <span
               onClick={() => selectedPageHandler(index + 1)}
@@ -52,7 +57,14 @@ export default function Home() {
               {index + 1}
             </span>
           ))}
-          <button onClick={() => selectedPageHandler(page + 1)}>▶️</button>
+          <button
+            onClick={() => selectedPageHandler(page + 1)}
+            className={
+              page < products.length / 10 ? "" : "pagination__disabled"
+            }
+          >
+            ▶️
+          </button>
         </div>
       )}
     </div>
