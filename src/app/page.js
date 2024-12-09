@@ -10,12 +10,13 @@ export default function Home() {
     let res = await dty.json();
     if (res && res.products) {
       setProducts(res.products);
-      setTotalPages(res.total / 10);
+      setTotalPages(Math.floor(res.total / 10));
     }
   };
-
+  
   useEffect(() => {
     fetchData();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page]);
 
   const selectedPageHandler = (selectedPage) => {
@@ -50,7 +51,8 @@ export default function Home() {
           >
             ◀️
           </button>
-          {[...Array(totalPages)].map((_, index) => (
+          
+          { [...Array(totalPages)].map((_, index) => (
             <span
               onClick={() => selectedPageHandler(index + 1)}
               key={index}
